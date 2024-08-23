@@ -1,6 +1,19 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
+const TodoCount = ({ todos }) => {
+  const completedTodos = todos.filter((todo) => todo.completed).length;
+  const activeTodos = todos.length - completedTodos;
+
+  return (
+    <div>
+      <p>
+        Active: {activeTodos}, Completed: {completedTodos}
+      </p>
+    </div>
+  );
+};
+
 const TodoList = () => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState("");
@@ -31,6 +44,12 @@ const TodoList = () => {
     setTodos(updatedTodos);
   };
 
+  const toggleTodoCompletion = (index) => {
+    const updatedTodos = [...todos];
+    updatedTodos[index].completed = !updatedTodos[index].completed;
+    setTodos(updatedTodos);
+  };
+
   return (
     <div>
       <h1>Todo List</h1>
@@ -41,6 +60,7 @@ const TodoList = () => {
         placeholder="Add a new todo"
       />
       <button onClick={addTodo}>Add</button>
+      <TodoCount todos={todos} />
       <ul>
         {todos.map((todo, index) => (
           <li
@@ -49,6 +69,11 @@ const TodoList = () => {
               textDecoration: todo.completed ? "line-through" : "none",
             }}
           >
+            <input
+              type="checkbox"
+              checked={todo.completed}
+              onChange={() => toggleTodoCompletion(index)}
+            />
             {todo.text}
             <button onClick={() => deleteTodo(index)}>Delete</button>
           </li>

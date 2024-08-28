@@ -1,6 +1,6 @@
-const express = require("express");
-const { Pool } = require("pg");
-const cors = require("cors");
+import express from "express";
+import { Pool } from "pg";
+import cors from "cors";
 
 const app = express();
 const port = 3001;

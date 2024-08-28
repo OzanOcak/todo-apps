@@ -58,3 +58,26 @@ CREATE TABLE todos (
   completed BOOLEAN DEFAULT FALSE
 );
 ```
+
+## Typescript
+
+* for server-side
+```console
+brew upgrade node
+npm i --save-dev @types/cors @types/pg @types/express
+tsc
+node dist/index.js
+```
+Use ts-node for Development allows you to execute TypeScript files on the fly without need of compile.
+```console
+npx ts-node server/index.ts
+```
+
+update package.json
+```console
+"scripts": {
+  "build": "tsc",
+  "start": "node dist/index.js",
+  "dev": "ts-node server/index.ts"
+}
+```

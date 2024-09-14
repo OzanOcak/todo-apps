@@ -10,20 +10,28 @@ type Task = {
 };
 
 function App() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: 'Learn React', isCompleted: true },
-    { id: 2, title: 'Create React Tutorial', isCompleted: true },
-    { id: 3, title: 'Develop React Project', isCompleted: false },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const [taskItem, setTaskItem] = useState<string>('');
 
   function handleAddItem() {
+    const trimmedTaskItem = taskItem.trim();
+
+    if (!trimmedTaskItem) {
+      return;
+    }
     setTasks([
       ...tasks,
-      { id: new Date().getTime(), title: taskItem, isCompleted: false },
+      { id: new Date().getTime(), title: trimmedTaskItem, isCompleted: false },
     ]);
+    setTaskItem('');
   }
+
+  const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleAddItem();
+    }
+  };
 
   return (
     <>
@@ -35,6 +43,7 @@ function App() {
         value={taskItem}
         onChange={(e) => setTaskItem(e.target.value)}
         id="task-input"
+        onKeyDown={onInputKeyDown}
       />
       <button onClick={handleAddItem}>Add</button>
       <ul>

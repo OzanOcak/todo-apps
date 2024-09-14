@@ -19,13 +19,16 @@ function App() {
   const [taskItem, setTaskItem] = useState<string>('');
 
   function handleAddItem() {
-    setTasks([...tasks, { id: 1, title: taskItem, isCompleted: false }]);
+    setTasks([
+      ...tasks,
+      { id: new Date().getTime(), title: taskItem, isCompleted: false },
+    ]);
   }
 
   return (
     <>
       <h1>Task</h1>
-      <label className="sr-only" htmlFor="task-imput">
+      <label className="sr-only-" htmlFor="task-input">
         Add Task:
       </label>
       <input

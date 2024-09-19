@@ -1,50 +1,66 @@
-# React + TypeScript + Vite
+## REACT
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+```console
+npm create vite@latest todo-app -- --template react-ts
+cd todo-app && npm install
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+App.tsx
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react';
+```ts
+type Priority = 'p1' | 'p2' | 'p3';
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-});
+type Task = {
+  id: number;
+  title: string;
+  isCompleted: boolean;
+  priority?: Priority;
+};
+
+function App() {
+  const tasks: Task[] = [
+    {
+      id: 1,
+      title: 'Learn React',
+      isCompleted: true,
+      priority: 'p1',
+    },
+  ];
+
+  return (
+    <div>
+      <h1>Tasks</h1>
+      <ul>
+        {tasks.map((task) => (
+          <li key={task.id}>{task.title}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
+```
+
+Then we need to create a label for accessibility and text input for adding to list
+
+```ts
+<h1>Tasks</h1>
+<label htmlFor='task-input'>Add Task: </label>
+<input id='task-input' />
+<button onClick={() =>  console.log('Add'); }>
+    Add
+</button>
+```
+
+if we add below properties in input component we can console it as output in terminal
+
+```ts
+<h1>Tasks</h1>
+<label htmlFor='task-input'>Add Task: </label>
+<input id='task-input' value={taskName} onChange={(e) => setTaskName(e.target.value)}/>
+<button onClick={() =>  console.log(taskname); }>
+    Add
+</button>
 ```

@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 
 type Task = { id: number; title: string; isCompleted: boolean };
 
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: "study react", isCompleted: false },
+    { id: 1, title: "study react", isCompleted: true },
   ]);
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
   const [newTask, setNewTask] = useState<string>("");
+  useEffect(() => {
+    setFilteredTasks(tasks);
+  }, [tasks]);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setTasks([
@@ -40,19 +44,70 @@ export default function App() {
           </button>
         </form>
         <div className="filters flex justify-around mb-4">
-          <button className="text-blue-500 hover:underline">all tasks</button>
-          <button className="text-blue-500 hover:underline">
+          <button
+            onClick={() => setFilteredTasks(tasks.filter((task) => task))}
+            className="text-blue-500 hover:underline"
+          >
+            all tasks
+          </button>
+          <button
+            onClick={() =>
+              setFilteredTasks(
+                tasks.filter((task) => task.isCompleted === true)
+              )
+            }
+            className="text-blue-500 hover:underline"
+          >
             completed tasks
           </button>
-          <button className="text-blue-500 hover:underline">
+          <button
+            onClick={() =>
+              setFilteredTasks(
+                tasks.filter((task) => task.isCompleted === false)
+              )
+            }
+            className="text-blue-500 hover:underline"
+          >
             uncompleted tasks
           </button>
         </div>
         <div className="task_list">
           <ul className="list-disc pl-5">
-            {tasks.map((task) => (
-              <li key={task.id} className="text-gray-700 mb-2">
-                {task.title}
+            {filteredTasks.map((task) => (
+              <li
+                key={task.id}
+                className="text-gray-700 mb-2 py-1 bg-slate-200 list-none rounded-md"
+              >
+                <div className="flex px-2 justify-between">
+                  <div className="flex">
+                    <input
+                      type="checkbox"
+                      checked={task.isCompleted}
+                      onChange={() =>
+                        setTasks(
+                          filteredTasks.map((t) =>
+                            t.id === task.id
+                              ? {
+                                  ...t,
+                                  isCompleted: !t.isCompleted,
+                                }
+                              : t
+                          )
+                        )
+                      }
+                      className="mx-4"
+                    />
+                    <p>{task.title}</p>
+                  </div>
+                  <button
+                    onClick={() =>
+                      setTasks(tasks.filter((t) => task.id !== t.id))
+                    }
+                    className="bg-red-600 text-white rounded-lg px-2"
+                  >
+                    Delete
+                  </button>
+                </div>
               </li>
             ))}
           </ul>

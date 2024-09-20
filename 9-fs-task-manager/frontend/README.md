@@ -139,39 +139,45 @@ export default function App() {
 }
 ```
 
-#### Adding Edit Button
+#### Controlled and uncontrolled components
 
 To add an edit button to task items, we need basic if statement to check if the edit button is clicked. Fist we need to create a boolean expression to create the logic` const [edit, setEdit] = useState<boolean>(false);` then we can create our program.
 
 ```ts
-{
-  edit ? (
-    <input
-      type="text"
-      value={task.title}
-      onChange={(e) =>
-        setTasks(
-          filteredTasks.map((t) =>
-            t.id === task.id ? { ...t, title: e.target.value } : t
-          )
-        )
-      }
-    />
-  ) : (
-    <p>{task.title}</p>
+const [editTitle, setEditTitle] = useState<string>(task.title); // State for the input value
+
+const saveEdit = () => {
+  setTasks(
+    filteredTasks.map((t) =>
+      t.id === task.id ? { ...t, title: editTitle } : t
+    )
   );
-}
+  setEdit(false); // Exit edit mode
+};
 ```
 
-But above code has a big problem; if one of the edit button is clicked, all the tasks in item will be in edit mode therefor we need to send an id to find which one is clicked. There are 2 possible aproach for doing this; which are controlled and uncontrolled components.
-
-#### Controlled and uncontrolled components
+All we need to do know is creating the logic of input with `<input type="text" value={editTitle} onChange={(e) => setEditTitle(e.target.value)} />` and calling saveEdit function when we click on save button.Ihis one was controlledcomponent, we can also use uncontrolled component
 
 In React, the concepts of controlled and uncontrolled components refer to how form elements manage their state. Here’s a breakdown of the differences, along with examples and a discussion on which might be better in various scenarios.
 
-##### Controlled Components
+```ts
+  const inputRef = useRef<HTMLInputElement | null>(null); // Create a ref for the input
 
-**_Definition:_** In controlled components, the form data is handled by the React component state. The input value is always derived from the state, and changes to the input are handled via event handlers that update the state.
+  const saveEdit = () => {
+    if (inputRef.current) {
+      const updatedTitle = inputRef.current.value; // Get the value from the ref
+      setTasks(
+        filteredTasks.map((t) =>
+          t.id === task.id ? { ...t, title: updatedTitle } : t
+        )
+      );
+      setEdit(false); // Exit edit mode
+    }
+  };
+
+  Then we need to create the logic in imput `<input type="text" ref={inputRef} />`
+
+**Controlled Components** In controlled components, the form data is handled by the React component state. The input value is always derived from the state, and changes to the input are handled via event handlers that update the state.
 
 - Pros:
 
@@ -182,35 +188,8 @@ Easier Validation: You can validate input on the fly as the state updates.
 - Cons:
 
 More Boilerplate: Requires more code to manage the state and handle updates.
-Example:
 
-```ts
-import React, { useState } from "react";
-
-function ControlledInput() {
-  const [value, setValue] = useState("");
-
-  const handleChange = (e) => {
-    setValue(e.target.value);
-  };
-
-  return (
-    <div>
-      <input
-        type="text"
-        value={value}
-        onChange={handleChange}
-        placeholder="Controlled Input"
-      />
-      <p>Value: {value}</p>
-    </div>
-  );
-}
-```
-
-##### Uncontrolled Components
-
-**_Definition_**: In uncontrolled components, form data is handled by the DOM itself. You typically use refs to access the input values when needed.
+**Uncontrolled Components**: In uncontrolled components, form data is handled by the DOM itself. You typically use refs to access the input values when needed.
 
 - Pros:
 
@@ -222,26 +201,6 @@ More Like Traditional HTML: It behaves more like standard HTML forms, which can 
 Multiple Sources of Truth: The input value exists in the DOM and is not directly tied to the component state, which can lead to inconsistencies.
 Harder to Validate: Validation must be handled at the time of reading the value, which can complicate the logic.
 
-```ts
-import React, { useRef } from "react";
-
-function UncontrolledInput() {
-  const inputRef = useRef(null);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("Input Value: " + inputRef.current.value);
-  };
-
-  return (
-    <form onSubmit={handleSubmit}>
-      <input type="text" ref={inputRef} placeholder="Uncontrolled Input" />
-      <button type="submit">Submit</button>
-    </form>
-  );
-}
-```
-
 - Which One is Better?
   The choice between controlled and uncontrolled components depends on your use case:
 
@@ -251,3 +210,4 @@ Recommended for most applications that require dynamic control over form data.
 Uncontrolled Components:
 Useful for simple forms or when integrating with non-React libraries that expect to manipulate the DOM directly.
 Can be faster to implement for basic use cases but may lead to issues in larger, more complex applications.
+```

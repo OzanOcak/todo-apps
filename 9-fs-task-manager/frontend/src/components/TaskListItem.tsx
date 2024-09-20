@@ -13,6 +13,28 @@ export default function TaskListItem({
   filteredTasks,
 }: TaskListItemProps) {
   const [edit, setEdit] = useState<boolean>(false);
+  const [editTitle, setEditTitle] = useState<string>(task.title); // State for the input value
+
+  const toggleCheckbox = () =>
+    setTasks(
+      filteredTasks.map((t) =>
+        t.id === task.id
+          ? {
+              ...t,
+              isCompleted: !t.isCompleted,
+            }
+          : t
+      )
+    );
+
+  const saveEdit = () => {
+    setTasks(
+      filteredTasks.map((t) =>
+        t.id === task.id ? { ...t, title: editTitle } : t
+      )
+    );
+    setEdit(false); // Exit edit mode
+  };
 
   return (
     <div className="flex px-2 justify-between">
@@ -20,45 +42,45 @@ export default function TaskListItem({
         <input
           type="checkbox"
           checked={task.isCompleted}
-          onChange={() =>
-            setTasks(
-              filteredTasks.map((t) =>
-                t.id === task.id
-                  ? {
-                      ...t,
-                      isCompleted: !t.isCompleted,
-                    }
-                  : t
-              )
-            )
-          }
+          onChange={toggleCheckbox}
           className="mx-4"
         />
         {edit ? (
           <input
             type="text"
-            value={task.title}
-            onChange={(e) =>
-              setTasks(
-                filteredTasks.map((t) =>
-                  t.id === task.id ? { ...t, title: e.target.value } : t
-                )
-              )
-            }
+            value={editTitle}
+            onChange={(e) => setEditTitle(e.target.value)}
           />
         ) : (
           <p>{task.title}</p>
         )}
       </div>
       <div className="buttons">
-        <button
-          onClick={() => {
-            setEdit(true);
-          }}
-          className="bg-green-600 text-white rounded-lg px-5 mx-2"
-        >
-          Edit
-        </button>
+        {!edit ? (
+          <button
+            onClick={() => {
+              setEdit(true);
+            }}
+            className="bg-green-600 text-white rounded-lg px-5 mx-2"
+          >
+            Edit
+          </button>
+        ) : (
+          <>
+            <button
+              onClick={saveEdit}
+              className="bg-blue-600 text-white rounded-lg px-2 ml-1"
+            >
+              Save
+            </button>
+            <button
+              onClick={() => setEdit(false)}
+              className="bg-red-600 text-white rounded-lg px-2 mx-1"
+            >
+              Cancel
+            </button>
+          </>
+        )}
         <button
           onClick={() =>
             setTasks(filteredTasks.filter((t) => task.id !== t.id))

@@ -70,3 +70,41 @@ We can now render our list of tasks using the map function:
   ))}
 </ul>
 ```
+
+##### Step 6: Understanding Side Effects
+
+After adding checkbox and delete button, we can start implementing the logic of the app. All we need modifying the list, however we also filter buttons which should't modify the original list.So we need to create new list for storage and assign tasks list as initial value.
+`const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);`
+
+This new create llist will be mapped in the ui.
+
+We also need to use **useEffect** for side effects because we need to modify filtered tasks list if any change happens with tasks
+`  useEffect(() => { setFilteredTasks(tasks); }, [tasks]);`
+
+For delete button we can modify the original list since we don't need to query deleted task: `onClick={() => setTasks(filteredTasks.filter((t) => task.id !== t.id))}`
+
+For toggling checkbox input, we should need to be able uncheck the checkbox but we still modify the original list with setTasks method.
+
+```ts
+setTasks(
+  filteredTasks.map((t) =>
+    t.id === task.id ? { ...t, isCompleted: !t.isCompleted } : t
+  )
+);
+```
+
+Finally we can implement logic of filter buttons.
+
+```ts
+  <button onClick={() =>
+     setFilteredTasks(tasks.filter((task) => task))}> all tasks
+  </button>
+  <button onClick={() =>
+     setFilteredTasks( tasks.filter((task) => task.isCompleted === true))}>completed tasks
+  </button>
+  <button onClick={() =>
+     setFilteredTasks( tasks.filter((task) => task.isCompleted === false))}>uncompleted tasks
+  </button>
+```
+
+Now our simple app is ready, all we need to is displayin filtersList with **_map_** function.

@@ -21,8 +21,8 @@ export default function App() {
     setNewTask("");
   };
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/3">
+    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-100">
+      <div className="bg-white rounded-lg shadow-lg p-6 mt-4 w-11/12 md:w-8/12">
         <h1 className="text-2xl font-semibold text-center mb-4">
           Task Manager
         </h1>
@@ -46,7 +46,7 @@ export default function App() {
         <div className="filters flex justify-around mb-4">
           <button
             onClick={() => setFilteredTasks(tasks.filter((task) => task))}
-            className="text-blue-500 hover:underline"
+            className="text-blue-500 px-2 hover:bg-blue-400 hover:text-white hover:px-2 hover:rounded-md"
           >
             all tasks
           </button>
@@ -56,7 +56,7 @@ export default function App() {
                 tasks.filter((task) => task.isCompleted === true)
               )
             }
-            className="text-blue-500 hover:underline"
+            className="text-blue-500 px-2 hover:bg-blue-400 hover:text-white hover:px-2 hover:rounded-md"
           >
             completed tasks
           </button>
@@ -66,7 +66,7 @@ export default function App() {
                 tasks.filter((task) => task.isCompleted === false)
               )
             }
-            className="text-blue-500 hover:underline"
+            className="text-blue-500 px-2 hover:bg-blue-400 hover:text-white hover:px-2 hover:rounded-md"
           >
             uncompleted tasks
           </button>
@@ -101,7 +101,7 @@ export default function App() {
                   </div>
                   <button
                     onClick={() =>
-                      setTasks(tasks.filter((t) => task.id !== t.id))
+                      setTasks(filteredTasks.filter((t) => task.id !== t.id))
                     }
                     className="bg-red-600 text-white rounded-lg px-2"
                   >

@@ -211,3 +211,58 @@ Uncontrolled Components:
 Useful for simple forms or when integrating with non-React libraries that expect to manipulate the DOM directly.
 Can be faster to implement for basic use cases but may lead to issues in larger, more complex applications.
 ```
+
+#### useRef
+
+The useRef hook is a built-in React hook that allows you to create a mutable object. This object persists for the full lifetime of the component. It can be used to store any mutable value, but it is most commonly used for accessing DOM elements directly.
+
+**Key Features:**
+Mutable Object: The object returned by useRef has a .current property that can be set and modified without causing re-renders.
+Accessing DOM Elements: You can use useRef to directly reference a DOM element and manipulate it (e.g., focusing an input).
+Preserves Value: The value stored in a ref does not trigger re-renders when updated, making it suitable for storing values that do not need to be part of the component's render cycle.
+Use Cases for useRef
+Accessing DOM Elements: Like focusing an input or measuring the size of an element.
+Storing Mutable Values: Keeping track of values that will not cause a re-render, such as timers or interval IDs.
+Persisting Values Across Renders: Keeping a value that needs to persist across renders without triggering a re-render when changed.
+
+```ts
+const inputRef = useRef<HTMLInputElement | null>(null); // Create a ref for the input
+
+const handleEditClick = () => {
+  setEdit(true);
+  setEditTitle(task.title); // Reset the title to current task title
+  if (inputRef.current) {
+    inputRef.current.focus(); // Focus on the input when editing starts
+  }
+};
+```
+
+Lastly we need to call handleEditClick within onClick function of Edit button and add ref into input jsx `ref={inputRef}`.
+Below code doesn't work because the component uses useRef is not rendered in the beggining of app so we need to use usEffect
+
+```ts
+const handleClickEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setEditTitle(e.target.value);
+  inputRef.current?.focus(); // it doesn't focus
+};
+```
+
+When we click on edit button setEdit change the edit variable so we can use
+
+```ts
+const inputRef = useRef<HTMLInputElement>(null);
+
+useEffect(() => {
+  inputRef.current?.focus();
+}, [edit]);
+```
+
+Then we need to bind input with ref so it can focus every time edit is changed.
+
+```ts
+{edit ? (
+          <input
+            type="text"
+            value={editTitle}
+            ref={inputRef}
+```

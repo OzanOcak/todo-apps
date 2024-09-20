@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Task } from "../types";
 
 type TaskListItemProps = {
@@ -14,6 +14,7 @@ export default function TaskListItem({
 }: TaskListItemProps) {
   const [edit, setEdit] = useState<boolean>(false);
   const [editTitle, setEditTitle] = useState<string>(task.title); // State for the input value
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const toggleCheckbox = () =>
     setTasks(
@@ -36,6 +37,10 @@ export default function TaskListItem({
     setEdit(false); // Exit edit mode
   };
 
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [edit]);
+
   return (
     <div className="flex px-2 justify-between">
       <div className="flex">
@@ -49,6 +54,7 @@ export default function TaskListItem({
           <input
             type="text"
             value={editTitle}
+            ref={inputRef}
             onChange={(e) => setEditTitle(e.target.value)}
           />
         ) : (
@@ -60,6 +66,7 @@ export default function TaskListItem({
           <button
             onClick={() => {
               setEdit(true);
+              setEditTitle(task.title);
             }}
             className="bg-green-600 text-white rounded-lg px-5 mx-2"
           >

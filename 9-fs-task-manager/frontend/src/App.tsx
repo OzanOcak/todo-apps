@@ -7,11 +7,15 @@ import TaskList from "./components/TaskList";
 type Task = { id: number; title: string; isCompleted: boolean };
 
 export default function App() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: "study react", isCompleted: true },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const localValue = localStorage.getItem("TASKS");
+    if (localValue == null) return [];
+
+    return JSON.parse(localValue);
+  });
   const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
   useEffect(() => {
+    localStorage.setItem("TASKS", JSON.stringify(tasks));
     setFilteredTasks(tasks);
   }, [tasks]);
 

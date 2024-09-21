@@ -266,3 +266,74 @@ Then we need to bind input with ref so it can focus every time edit is changed.
             value={editTitle}
             ref={inputRef}
 ```
+#### Local Storage
+
+```ts
+export default function App() {
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const localValue = localStorage.getItem("TASKS");
+    if (localValue == null) return [];
+
+    return JSON.parse(localValue);
+  });
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>(tasks);
+  useEffect(() => {
+    localStorage.setItem("TASKS", JSON.stringify(tasks));
+    setFilteredTasks(tasks);
+  }, [tasks]);
+```
+
+#### Unit Test and TDD (Test Driven Development)
+
+**_Unit Testing:_**
+Focuses on testing individual components or functions in isolation to ensure they work as expected.
+Typically written after the code is developed, although they can also be written concurrently.
+Helps identify bugs and ensure that each unit of code performs correctly.
+
+**_Test-Driven Development (TDD):_**
+A development approach where tests are written before the actual code.
+Follows a cycle of writing a failing test, implementing code to pass the test, and then refactoring.
+Encourages better design and more modular code, as you structure your code to pass tests from the start.
+**_Why Vitest Alone May Not Be Enough for Unit Testing_**
+Limited Scope: While Vitest is a powerful testing framework, it primarily focuses on unit and integration testing. It may not offer the same level of functionality for component testing as frameworks specifically designed for UI components.
+**_Integration with Libraries:_**
+Using Vitest alone might not provide the optimized utilities for testing React components, such as handling user interactions and simulating the DOM.
+**_Why Use React Testing Library_**
+User-Centric: React Testing Library emphasizes testing components from a user's perspective, meaning tests are more aligned with how users interact with the application.
+Simplicity: It encourages writing simpler tests that focus on how the component behaves rather than its implementation details, promoting better maintainability.
+DOM Interaction: Provides utilities to query DOM nodes, simulate events, and assert user interactions, which are crucial for testing React applications effectively.
+Best Practices: Encourages following best practices in testing React components, such as avoiding testing for implementation details and focusing on user behavior.
+**_Summary_**
+Unit Testing is about verifying the correctness of individual code units, while TDD is a methodology that integrates testing into the coding process.
+Vitest is powerful for unit tests but lacks some UI-specific features needed for comprehensive React component testing.
+React Testing Library enhances testing by focusing on user interactions and component behavior, making it a valuable tool in your testing toolkit.
+
+**Setting up environment for testing**
+Since out project is bootstraped by vite, we already have vitest installed but if you need to, you can download it with `npm install -D vitest`
+
+- simple unit tests
+
+1-create sum.ts file
+
+```ts
+export function sum(a: number, b: number) {
+  return a + b;
+}
+```
+
+2-create sum.test.ts file
+
+```ts
+import { expect, test } from "vitest";
+import { sum } from "./sum";
+
+test("adds 20 + 22 to equal 42", () => {
+  expect(sum(20, 22)).toBe(42);
+});
+```
+
+3- update script in package.json with `"test":"vitest"` and run `npm run test`
+
+**_React Testing Library (RTL)_**
+
+`npm install -D @testing-library/react` then `npm install -D jsdom`
